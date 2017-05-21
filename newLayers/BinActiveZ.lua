@@ -20,8 +20,8 @@ end
 function TriActiveZ:updateOutput(input)
 	local s = input:size()
 		self.output:resizeAs(input):copy(input)
-		self.output[input:ge(0.1)]=1
-		self.output[input:le(0.1)]=0
+		self.output[input:ge(0)]=1
+		self.output[input:le(0)]=0
     self.output[input:le(-0.1)]=-1
 		return self.output
 end
