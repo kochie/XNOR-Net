@@ -2,7 +2,7 @@ function createModel()
    require 'cudnn'
       local function activation()
       local C= nn.Sequential()
-      C:add(nn.BinActiveZ())
+      C:add(nn.TriActiveZ())
       return C
    end
 

@@ -1,4 +1,4 @@
---  Modified by Mohammad Rastegari (Allen Institute for Artificial Intelligence (AI2)) 
+--  Modified by Mohammad Rastegari (Allen Institute for Artificial Intelligence (AI2))
 --  Copyright (c) 2014, Facebook, Inc.
 --  All rights reserved.
 --
@@ -41,6 +41,7 @@ function M.parse(arg)
     cmd:option('-weightDecay',     0, 'weight decay')
     cmd:option('-shareGradInput',  true, 'Sharing the gradient memory')
     cmd:option('-binaryWeight',    false, 'Sharing the gradient memory')
+    cmd:option('-ternaryWeight',   false, 'Create network with ternary activation.')
     cmd:option('-testOnly',    false, 'Sharing the gradient memory')
     ---------- Model options ----------------------------------
     cmd:option('-netType',     'alexnet', 'Options: alexnet | overfeat | alexnetowtbn | vgg | googlenet | resnet')
