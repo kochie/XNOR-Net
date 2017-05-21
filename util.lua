@@ -1,6 +1,9 @@
---  Modified by Mohammad Rastegari (Allen Institute for Artificial Intelligence (AI2)) 
+--  Modified by Mohammad Rastegari (Allen Institute for Artificial Intelligence (AI2))
 local ffi=require 'ffi'
 
+--[[
+computes the top1 and top5 error rate for a given output.
+--]]
 function computeScore(output, target, nCrops)
    if nCrops > 1 then
       -- Sum over crops
@@ -57,7 +60,7 @@ end
 
 function loadParams(model,saved_model)
     params = model:parameters();
-    local saved_params = saved_model:parameters(); 
+    local saved_params = saved_model:parameters();
          for i=1,#params do
             params[i]:copy(saved_params[i]);
          end
@@ -69,12 +72,16 @@ function loadParams(model,saved_model)
       end
 end
 
-
+--[[
+Function to zero all bias values for a given table of coonvelution nodes.
+--]]
 function zeroBias(convNodes)
    for i =1, #convNodes do
     local n = convNodes[i].bias:fill(0)
    end
 end
+
+
 function updateBinaryGradWeight(convNodes)
    for i =2, #convNodes-1 do
     local n = convNodes[i].weight[1]:nElement()
@@ -94,12 +101,10 @@ function updateBinaryGradWeight(convNodes)
 end
 
 
-
-
 function meancenterConvParms(convNodes)
    for i =2, #convNodes-1 do
     local s = convNodes[i].weight:size()
-    local negMean = convNodes[i].weight:mean(2):mul(-1):repeatTensor(1,s[2],1,1);  
+    local negMean = convNodes[i].weight:mean(2):mul(-1):repeatTensor(1,s[2],1,1);
     convNodes[i].weight:add(negMean)
    end
    if opt.nGPU >1 then
@@ -112,7 +117,6 @@ function binarizeConvParms(convNodes)
    for i =2, #convNodes-1 do
     local n = convNodes[i].weight[1]:nElement()
     local s = convNodes[i].weight:size()
-    
     local m = convNodes[i].weight:norm(1,4):sum(3):sum(2):div(n);
     convNodes[i].weight:sign():cmul(m:expand(s))
    end
@@ -130,7 +134,6 @@ function clampConvParms(convNodes)
     model:syncParameters()
    end
 end
-
 
 
 function rand_initialize(layer)
