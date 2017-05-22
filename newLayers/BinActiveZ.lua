@@ -20,10 +20,13 @@ end
 function TriActiveZ:updateOutput(input)
 	local s = input:size()
 		self.output:resizeAs(input):copy(input)
-		self.output[input:ge(0)]=1
-		self.output[input:le(0)]=0
-    self.output[input:le(-0.1)]=-1
-		return self.output
+		local smallOutput = torch.CudaTensor(s):resizeAs(input):copy(input)
+		smallOutput[input:ge(0.1)]=1
+		smallOutput[input:lt(0.1)]=0
+		self.output[input:le(-0.1)]=-1
+		self.output[input:gt(-0.1)]=0
+		self.output:long():cbitor(smallOutput:long())
+		return self.output:cuda()
 end
 
 function TriActiveZ:updateGradInput(input, gradOutput)

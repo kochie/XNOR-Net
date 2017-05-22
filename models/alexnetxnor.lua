@@ -1,19 +1,25 @@
 function createModel()
-   require 'cudnn'
-      local function activation()
-      local C= nn.Sequential()
-      C:add(nn.TriActiveZ())
-      return C
-   end
+  require 'cudnn'
+  local function BinActivation()
+    local C= nn.Sequential()
+    C:add(nn.BinActiveZ())
+    return C
+  end
 
-   local function MaxPooling(kW, kH, dW, dH, padW, padH)
+  local function TriActivation()
+    local C= nn.Sequential()
+    C:add(nn.TriActiveZ())
+    return C
+  end
+
+  local function MaxPooling(kW, kH, dW, dH, padW, padH)
     return nn.SpatialMaxPooling(kW, kH, dW, dH, padW, padH)
-   end
+  end
 
    local function BinConvolution(nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH)
          local C= nn.Sequential()
           C:add(nn.SpatialBatchNormalization(nInputPlane,1e-4,false))
-          C:add(activation())
+          C:add(TriActivation()) -- <---
    		    C:add(cudnn.SpatialConvolution(nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH))
    		 return C
    end
@@ -21,7 +27,7 @@ function createModel()
     local function BinMaxConvolution(nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH,mW,mH)
          local C= nn.Sequential()
           C:add(nn.SpatialBatchNormalization(nInputPlane,1e-4,false))
-          C:add(activation())
+          C:add(TriActivation()) -- <---
           C:add(cudnn.SpatialConvolution(nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH))
           C:add(MaxPooling(3,3,2,2))
        return C
